@@ -49,3 +49,35 @@ while true; do
         * ) setup_git; break;;
     esac
 done
+
+function setup_themes() {
+    echo 'hello, setting up themes';
+
+    # checking if dev folder exists or not
+    export dev_path="$HOME/t1"
+    if [ -d "$dev_path" ] 
+    then
+        echo "Directory $dev_path exists." 
+    else
+        echo "Creating: Directory $dev_path does not exists."
+        mkdir "$dev_path"
+    fi
+
+    # checking if already exists, delete and add new
+    export path="$HOME/t1/my-ubuntu-setup"
+    if [ -d "$path" ] 
+    then
+        echo "Directory $path exists."
+        sudo rm -R "$path"
+    fi
+
+    cd "$dev_path" && git clone git@github.com:Signior-X/my-ubuntu-setup.git
+}
+
+while true; do
+    read -p "Do you wish setup themes " yn
+    case $yn in
+        [Nn]* ) break;;
+        * ) setup_themes; break;;
+    esac
+done
