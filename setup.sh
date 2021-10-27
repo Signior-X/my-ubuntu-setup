@@ -64,9 +64,10 @@ function setup_git() {
     cat ~/.ssh/id_rsa.pub
 
     echo ''
-    read -p 'Add this ssh key in your github account and press enter ' tmpvr
+    read -p 'Add this ssh key in your github account visiting https://github.com/settings/keys and Press enter ' tmpvr
 
     ssh -T git@github.comkillall -3 gnome-shell
+    echo "Git complete if previous message was success"
 }
 
 function install_extension() {
