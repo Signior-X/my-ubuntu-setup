@@ -192,6 +192,11 @@ function setup_rest_all {
     echo "Sublime text installed - Don't forget to setup build script :P"
 }
 
+function setup_flutter() {
+    sudo snap install flutter
+
+    # For android studio, do manually
+}
 
 function setup_priyam() {
     setup_conda
@@ -199,35 +204,36 @@ function setup_priyam() {
     setup_opera_chrome
     setup_vscode
     setup_rest_all
+    setup_flutter
 }
 
 
-# sudo apt-get update
+sudo apt-get update
 
-# while true; do
-#     read -p "Do you wish to install basic utilites? " yn
-#     case $yn in
-#         [Nn]* ) break;;
-#         * ) basic_setup; break;;
-#     esac
-# done
+while true; do
+    read -p "Do you wish to install basic utilites? " yn
+    case $yn in
+        [Nn]* ) break;;
+        * ) basic_setup; break;;
+    esac
+done
 
 
-# while true; do
-#     read -p "Do you wish to setup git with ssh? " yn
-#     case $yn in
-#         [Nn]* ) break;;
-#         * ) setup_git; break;;
-#     esac
-# done
+while true; do
+    read -p "Do you wish to setup git with ssh? " yn
+    case $yn in
+        [Nn]* ) break;;
+        * ) setup_git; break;;
+    esac
+done
 
-# while true; do
-#     read -p "Do you wish setup themes? " yn
-#     case $yn in
-#         [Nn]* ) break;;
-#         * ) setup_themes; break;;
-#     esac
-# done
+while true; do
+    read -p "Do you wish setup themes? " yn
+    case $yn in
+        [Nn]* ) break;;
+        * ) setup_themes; break;;
+    esac
+done
 
 while true; do
     read -p "Do you wish to install all that what priyam uses? " yn
