@@ -42,6 +42,7 @@ function delete_directory_if_exists () {
 function basic_setup() {
     echo 'Doing basic setup';
 
+    sudo apt-get update
 	sudo apt-get upgrade
 	sudo apt-get install curl make wget
 }
@@ -66,11 +67,13 @@ function setup_git() {
     echo ''
     read -p 'Add this ssh key in your github account visiting https://github.com/settings/keys and Press enter ' tmpvr
 
-    ssh -T git@github.comkillall -3 gnome-shell
+    ssh -T git@github.com
     echo "Git complete if previous message was success"
 }
 
 function install_extension() {
+    create_directory_if_not_exists "$extensions_path"
+
     url="https://extensions.gnome.org/extension-data"
     echo "Installing extension $1"
 
@@ -90,6 +93,9 @@ function install_extension() {
     fi
 
     gnome-shell-extension-tool -e "$fuuid"
+
+    IFS='@' read -ra ADDR <<< "$fuuid"
+    sudo cp "$extensions_path/$fuuid/schemas/org.gnome.shell.extensions.${ADDR[0]}.gschema.xml" /usr/share/glib-2.0/schemas/
 
     delete_file_if_exists "$1"
 }
@@ -126,12 +132,28 @@ function setup_themes() {
 
     gsettings set org.gnome.shell.extensions.user-theme name "Layan-light"
     echo "User theme set to layan-light"
+}
 
+function setup_extensions() {
+    # install_extension "user-theme@40gnome-shell-extensions.gcampax.github.com.v34.shell-extension.zip"
+    install_extension "dash-to-dockmicxgx.gmail.com.v65.shell-extension.zip"
     install_extension "gnome-shell-screenshotttll.de.v43.shell-extension.zip"
     install_extension "clipboard-indicatortudmotu.com.v34.shell-extension.zip"
     install_extension "night-light-slider.timurlinux.com.v12.shell-extension.zip"
     install_extension "hidetopbarmathieu.bidon.ca.v72.shell-extension.zip"
     install_extension "unitehardpixel.eu.v32.shell-extension.zip"
+
+    # Important sync settings of extensions to global gsettings
+    sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+    gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
+    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
+
+    gsettings set org.gnome.shell.extensions.hidetopbar mouse-sensitive true
+
+    gsettings set org.gnome.shell.extensions.unite window-buttons-theme "osx-arc"
+    gsettings set org.gnome.shell.extensions.unite extend-left-box false
 }
 
 function setup_conda() {
@@ -194,7 +216,7 @@ function setup_rest_all {
 }
 
 function setup_flutter() {
-    sudo snap install flutter
+    # sudo snap install flutter
 
     # For android studio, do manually
 }
@@ -208,8 +230,20 @@ function setup_priyam() {
     setup_flutter
 }
 
+function setup_libinput_gestures() {
+    # Installs https://github.com/bulletmark/libinput-gestures
 
-sudo apt-get update
+    sudo gpasswd -a $USER input
+    sudo apt-get install wmctrl xdotool
+    sudo apt-get install libinput-tools
+
+    git clone https://github.com/bulletmark/libinput-gestures.git
+    cd libinput-gestures
+    sudo make install
+
+    libinput-gestures-setup autostart
+    echo "LibInput gestures will work after login or restart!"
+}
 
 while true; do
     read -p "Do you wish to install basic utilites? " yn
@@ -237,9 +271,26 @@ while true; do
 done
 
 while true; do
+    read -p "Do you wish setup extensions? " yn
+    case $yn in
+        [Nn]* ) break;;
+        * ) setup_extensions; break;;
+    esac
+done
+
+while true; do
     read -p "Do you wish to install all that what priyam uses? " yn
     case $yn in
         [Nn]* ) break;;
         * ) setup_priyam; break;;
     esac
 done
+
+while true; do
+    read -p "Do you wish to install all that what priyam uses? " yn
+    case $yn in
+        [Nn]* ) break;;
+        * ) setup_libinput_gestures; break;;
+    esac
+done
+
