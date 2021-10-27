@@ -2,22 +2,37 @@
 
 echo " ***** Welcome to your ubuntu setup! ***** "
 
-sudo apt-get update
+dev_path="$HOME/t1"
+themes_path="$HOME/.themes"
+icons_path="$HOME/.icons"
+extensions_path="$HOME/t1"
+
+function create_directory_if_not_exists() {
+    if [ -d "$1" ] 
+    then
+        echo "Directory $1 already exists." 
+    else
+        echo "Creating: Directory $1 does not exists."
+        mkdir "$1"
+    fi
+}
+
+function delete_directory_if_exists () {
+    if [ -d "$1" ] 
+    then
+        echo "Deleting: Directory $1 exists"
+        sudo rm -R "$1" 
+    else
+        echo "Directory $1 does not exists."
+    fi
+}
 
 function basic_setup() {
     echo 'Doing basic setup';
 
 	sudo apt-get upgrade
-	sudo apt-get install curl make
+	sudo apt-get install curl make wget
 }
-
-while true; do
-    read -p "Do you wish to install basic utilites? " yn
-    case $yn in
-        [Nn]* ) break;;
-        * ) basic_setup; break;;
-    esac
-done
 
 function setup_git() {
     echo 'hello, world'
@@ -42,37 +57,60 @@ function setup_git() {
     ssh -T git@github.com
 }
 
-while true; do
-    read -p "Do you wish to setup git with ssh? " yn
-    case $yn in
-        [Nn]* ) break;;
-        * ) setup_git; break;;
-    esac
-done
-
 function setup_themes() {
     echo 'hello, setting up themes';
 
+    sudo apt-get install gnome-tweaks gnome-shell-extensions
+
     # checking if dev folder exists or not
-    export dev_path="$HOME/t1"
-    if [ -d "$dev_path" ] 
-    then
-        echo "Directory $dev_path exists." 
-    else
-        echo "Creating: Directory $dev_path does not exists."
-        mkdir "$dev_path"
-    fi
+    # create_directory_if_not_exists "$dev_path"
+    # delete_directory_if_exists "$dev_path/my-ubuntu-setup"
 
-    # checking if already exists, delete and add new
-    export path="$HOME/t1/my-ubuntu-setup"
-    if [ -d "$path" ] 
-    then
-        echo "Directory $path exists."
-        sudo rm -R "$path"
-    fi
+    # cd "$dev_path" && git clone git@github.com:Signior-X/my-ubuntu-setup.git
 
-    cd "$dev_path" && git clone git@github.com:Signior-X/my-ubuntu-setup.git
+    create_directory_if_not_exists "$themes_path"
+
+    delete_directory_if_exists "$themes_path/Layan-dark"
+    cp -R "$dev_path/my-ubuntu-setup/themes/Layan-dark" "$themes_path/Layan-dark"
+
+    delete_directory_if_exists "$themes_path/Layan-light"
+    cp -R "$dev_path/my-ubuntu-setup/themes/Layan-light" "$themes_path/Layan-light"
+
+    gsettings set org.gnome.desktop.interface gtk-theme "Layan-dark"
+    echo "Gtk theme set to layan light"
+
+    create_directory_if_not_exists "$icons_path"
+
+    delete_directory_if_exists "$icons_path/candy-icons"
+    cp -R "$dev_path/my-ubuntu-setup/icons/candy-icons" "$icons_path/candy-icons"
+
+    gsettings set org.gnome.desktop.interface icon-theme "candy-icons"
+    echo "Icons set to candy icons!"
+
+    gsettings set org.gnome.shell.extensions.user-theme name "Layan-dark"
+    echo "User theme set to layan-light"
+
+    
 }
+
+# sudo apt-get update
+
+# while true; do
+#     read -p "Do you wish to install basic utilites? " yn
+#     case $yn in
+#         [Nn]* ) break;;
+#         * ) basic_setup; break;;
+#     esac
+# done
+
+
+# while true; do
+#     read -p "Do you wish to setup git with ssh? " yn
+#     case $yn in
+#         [Nn]* ) break;;
+#         * ) setup_git; break;;
+#     esac
+# done
 
 while true; do
     read -p "Do you wish setup themes " yn
