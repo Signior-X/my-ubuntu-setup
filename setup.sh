@@ -100,10 +100,29 @@ function install_extension() {
     delete_file_if_exists "$1"
 }
 
+function add_theme() {
+    create_directory_if_not_exists "$themes_path"
+
+    delete_directory_if_exists "$themes_path/$1"
+    cp -R "$dev_path/my-ubuntu-setup/themes/$1" "$themes_path/$1"
+}
+
+function add_icon() {
+    create_directory_if_not_exists "$icons_path"
+
+    delete_directory_if_exists "$icons_path/$1"
+    cp -R "$dev_path/my-ubuntu-setup/icons/$1" "$icons_path/$1"
+}
+
 function setup_themes() {
     echo 'hello, setting up themes';
 
     sudo apt-get install gnome-tweaks gnome-shell-extensions wget
+
+    gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
+    gsettings set org.gnome.desktop.interface icon-theme "Adwaita"
+    gsettings set org.gnome.shell.extensions.user-theme name ""
+    echo "Ready to delete and create!"
 
     # checking if dev folder exists or not
     create_directory_if_not_exists "$dev_path"
@@ -111,21 +130,21 @@ function setup_themes() {
 
     cd "$dev_path" && git clone git@github.com:Signior-X/my-ubuntu-setup.git
 
-    create_directory_if_not_exists "$themes_path"
+    # Choose what themes you want
+    add_theme "Layan-dark"
+    add_theme "Layan-light"
+    add_theme "Mojave-dark"
+    add_theme "Mojave-dark-solid"
+    add_theme "Mojave-light"
+    add_theme "Mojave-light-solid"
+    add_theme "Mc-OS-Transparent"
 
-    delete_directory_if_exists "$themes_path/Layan-dark"
-    cp -R "$dev_path/my-ubuntu-setup/themes/Layan-dark" "$themes_path/Layan-dark"
-
-    delete_directory_if_exists "$themes_path/Layan-light"
-    cp -R "$dev_path/my-ubuntu-setup/themes/Layan-light" "$themes_path/Layan-light"
+    # Choose what icons you want
+    add_icon "candy-icons"
+    add_icon "Cupertino-Catalina"
 
     gsettings set org.gnome.desktop.interface gtk-theme "Layan-light"
     echo "Gtk theme set to layan light"
-
-    create_directory_if_not_exists "$icons_path"
-
-    delete_directory_if_exists "$icons_path/candy-icons"
-    cp -R "$dev_path/my-ubuntu-setup/icons/candy-icons" "$icons_path/candy-icons"
 
     gsettings set org.gnome.desktop.interface icon-theme "candy-icons"
     echo "Icons set to candy icons!"
@@ -216,7 +235,7 @@ function setup_rest_all {
 }
 
 function setup_flutter() {
-    # sudo snap install flutter
+    sudo snap install flutter --classic
 
     # For android studio, do manually
 }
@@ -311,7 +330,7 @@ while true; do
 done
 
 while true; do
-    read -p "Do you wish to install all that what priyam uses? " yn
+    read -p "Do you wish to install libinput gestures? " yn
     case $yn in
         [Nn]* ) break;;
         * ) setup_libinput_gestures; break;;
