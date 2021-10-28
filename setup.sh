@@ -230,6 +230,30 @@ function setup_priyam() {
     setup_flutter
 }
 
+function setup_lenovo_ubuntu() {
+    # Fix jumping mouse problem
+    sudo apt-get install xserver-xorg-core
+    sudo apt-get install xserver-xorg-input-libinput
+    sudo apt install xserver-xorg-input-synaptics
+
+
+    # Fix middle click pasting
+    echo "[Desktop Entry]
+    Type=Application
+    Exec=synclient tapButton3=0
+    Hidden=false
+    NoDisplay=false
+    X-GNOME-Autostart-enabled=true
+    Name[en_IN]=stop middle paste
+    Name=stop middle paste
+    Comment[en_IN]=
+    Comment=" > synclient.desktop
+
+    create_directory_if_not_exists "$HOME/.config"
+    create_directory_if_not_exists "$HOME/.config/autostart"
+    mv synclient.desktop "$HOME/.config/autostart/"
+}
+
 function setup_libinput_gestures() {
     # Installs https://github.com/bulletmark/libinput-gestures
 
@@ -293,4 +317,12 @@ while true; do
         * ) setup_libinput_gestures; break;;
     esac
 done
+
+# while true; do
+#     read -p "Do not do yes here iff not priyam? " yn
+#     case $yn in
+#         [Nn]* ) break;;
+#         * ) setup_lenovo_ubuntu; break;;
+#     esac
+# done
 
