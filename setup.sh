@@ -92,7 +92,7 @@ function install_extension() {
         unzip -q "$1" -d "$extensions_path/$fuuid/"
     fi
 
-    gnome-shell-extension-tool -e "$fuuid"
+    gnome-extensions enable "$fuuid"
 
     IFS='@' read -ra ADDR <<< "$fuuid"
     sudo cp "$extensions_path/$fuuid/schemas/org.gnome.shell.extensions.${ADDR[0]}.gschema.xml" /usr/share/glib-2.0/schemas/
@@ -154,6 +154,8 @@ function setup_themes() {
 }
 
 function setup_extensions() {
+    sudo apt install gettext -y
+
     # install_extension "user-theme@40gnome-shell-extensions.gcampax.github.com.v34.shell-extension.zip"
     install_extension "dash-to-dockmicxgx.gmail.com.v65.shell-extension.zip"
     install_extension "gnome-shell-screenshotttll.de.v43.shell-extension.zip"
