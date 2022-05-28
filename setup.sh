@@ -167,9 +167,9 @@ function setup_extensions() {
     # Important sync settings of extensions to global gsettings
     sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
 
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
-    gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
+    # gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+    # gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
+    # gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
 
     gsettings set org.gnome.shell.extensions.hidetopbar mouse-sensitive true
 
